@@ -5,7 +5,7 @@ Einstiegsseite für sämtliche technische Dokumentation von WunderHorst.
 ---
 
 ## 🏗️ Architektur (`architecture/`)
-* *(Noch keine Dokumente vorhanden.)*
+* [Systemarchitektur – Übersicht](architecture/overview.md) – Dual-Port Kestrel, Vertical Slice Architecture, Native AOT, SQLite/Dapper.AOT, Auth & Frontend-Design-System.
 
 ## 🧩 Features (`features/`)
 * *(Noch keine Dokumente vorhanden.)*
