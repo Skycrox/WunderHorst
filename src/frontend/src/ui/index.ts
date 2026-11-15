@@ -1,4 +1,9 @@
 export { Alert, type AlertProps, type AlertTone } from "./components/Alert";
+export {
+  AppShellLayout,
+  type AppShellLayoutProps,
+  type NavItem,
+} from "./components/AppShellLayout";
 export { Badge, type BadgeProps, type BadgeTone } from "./components/Badge";
 export {
   Button,

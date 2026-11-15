@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   Alert,
+  AppShellLayout,
   Badge,
   Button,
   Card,
@@ -142,5 +143,31 @@ describe("UI Primitives", () => {
     );
 
     expect(screen.getByRole("main")).toHaveTextContent("Centered content");
+  });
+
+  it("AppShellLayout renders navigation with aria-current and triggers onSelectNav", async () => {
+    const user = userEvent.setup();
+    const onSelectNav = vi.fn();
+
+    render(
+      <AppShellLayout
+        brand={<Text>WunderHorst</Text>}
+        headerActions={<Button>Logout</Button>}
+        navItems={[
+          { id: "library", label: "Bibliothek" },
+          { id: "boxes", label: "Tonieboxen" },
+        ]}
+        activeNavId="library"
+        onSelectNav={onSelectNav}
+      >
+        <Text>Main area</Text>
+      </AppShellLayout>,
+    );
+
+    const activeBtn = screen.getByRole("button", { name: "Bibliothek" });
+    expect(activeBtn).toHaveAttribute("aria-current", "page");
+
+    await user.click(screen.getByRole("button", { name: "Tonieboxen" }));
+    expect(onSelectNav).toHaveBeenCalledWith("boxes");
   });
 });
