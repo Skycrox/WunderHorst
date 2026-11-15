@@ -64,15 +64,16 @@ public sealed class DatabaseTests : IDisposable
         var runner = new SqlMigrationRunner(factory, NullLogger<SqlMigrationRunner>.Instance);
 
         await runner.MigrateAsync();
-        await runner.MigrateAsync();
-
         await using var connection = await factory.OpenConnectionAsync();
-        var migrations = (await connection.QueryAsync<string>("SELECT id FROM schema_migrations;")).ToList();
+        var migrationsFirst = (await connection.QueryAsync<string>("SELECT id FROM schema_migrations;")).ToList();
+
+        await runner.MigrateAsync();
+        var migrationsSecond = (await connection.QueryAsync<string>("SELECT id FROM schema_migrations;")).ToList();
         var tableExists = await connection.QuerySingleAsync<long>(
             "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='app_metadata';");
 
-        Assert.Contains("001_init.sql", migrations);
-        Assert.Single(migrations);
+        Assert.Contains("001_init.sql", migrationsFirst);
+        Assert.Equal(migrationsFirst.Count, migrationsSecond.Count);
         Assert.Equal(1, tableExists);
     }
 
