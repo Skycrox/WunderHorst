@@ -1,0 +1,25 @@
+.container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--space-md);
+}
+
+.sm {
+  max-width: 28rem;
+}
+
+.md {
+  max-width: 48rem;
+}
+
+.lg {
+  max-width: 72rem;
+}
+
+.centeredViewport {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--space-xl);
+}

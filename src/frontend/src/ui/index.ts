@@ -12,6 +12,11 @@ export {
   type CardProps,
   type CardVariant,
 } from "./components/Card";
+export {
+  Container,
+  type ContainerProps,
+  type ContainerSize,
+} from "./components/Container";
 export { Form, type FormProps } from "./components/Form";
 export {
   Heading,

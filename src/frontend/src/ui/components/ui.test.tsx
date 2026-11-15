@@ -5,6 +5,7 @@ import {
   Badge,
   Button,
   Card,
+  Container,
   Form,
   Heading,
   Input,
@@ -131,5 +132,15 @@ describe("UI Primitives", () => {
 
     await user.click(screen.getByRole("button", { name: "Submit" }));
     expect(onSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  it("Container renders children and supports centerInViewport landmark", () => {
+    render(
+      <Container size="sm" centerInViewport>
+        <Text>Centered content</Text>
+      </Container>,
+    );
+
+    expect(screen.getByRole("main")).toHaveTextContent("Centered content");
   });
 });
