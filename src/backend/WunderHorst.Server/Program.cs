@@ -1,5 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Options;
+using WunderHorst.Server.Features.Auth.GetCurrentUser;
+using WunderHorst.Server.Features.Auth.Login;
+using WunderHorst.Server.Features.Auth.Logout;
 using WunderHorst.Server.Features.Auth.SetupAdmin;
 using WunderHorst.Server.Features.System.GetHealth;
 using WunderHorst.Server.Infrastructure.Auth;
@@ -23,7 +26,7 @@ builder.WebHost.ConfigureKestrel(kestrel =>
 
 builder.AddObservability();
 builder.AddDatabase();
-builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection(AuthOptions.SectionName));
+builder.AddCookieAuth();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -42,10 +45,14 @@ await SetupAdminHandler.BootstrapFromOptionsAsync(
     app.Logger);
 
 app.UseExceptionHandler();
+app.UseCookieAuth();
 
 var webApi = app.MapWebApi(serverOptions);
 webApi.MapGetHealth();
 webApi.MapSetupAdmin();
+webApi.MapLogin();
+webApi.MapLogout();
+webApi.MapGetCurrentUser();
 
 _ = app.MapBoxineApi(serverOptions);
 

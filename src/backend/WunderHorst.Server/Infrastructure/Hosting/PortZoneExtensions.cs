@@ -37,6 +37,7 @@ public static class PortZoneExtensions
 
         return endpoints
             .MapGroup(prefix)
+            .RequireAuthorization()
             .AddEndpointFilter(new PortZoneEndpointFilter(options.WebApiPort));
     }
 

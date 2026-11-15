@@ -66,6 +66,7 @@ public sealed class GetHealthTests
 
         var builder = WebApplication.CreateSlimBuilder();
         builder.WebHost.UseTestServer();
+        builder.Services.AddAuthorization();
         builder.Services.AddHealthChecks();
         builder.Services.ConfigureHttpJsonOptions(options =>
         {
@@ -73,6 +74,7 @@ public sealed class GetHealthTests
         });
 
         await using var app = builder.Build();
+        app.UseAuthorization();
         app.Use(async (context, next) =>
         {
             if (context.Request.Headers.TryGetValue("X-Simulated-LocalPort", out var portHeader) &&

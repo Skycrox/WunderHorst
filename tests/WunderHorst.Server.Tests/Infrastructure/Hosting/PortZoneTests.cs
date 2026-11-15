@@ -64,7 +64,9 @@ public sealed class PortZoneTests
 
         var builder = WebApplication.CreateSlimBuilder();
         builder.WebHost.UseTestServer();
+        builder.Services.AddAuthorization();
         await using var app = builder.Build();
+        app.UseAuthorization();
 
         app.Use(async (context, next) =>
         {
@@ -77,7 +79,7 @@ public sealed class PortZoneTests
             await next();
         });
 
-        app.MapWebApi(serverOptions).MapGet("/ping", () => Results.Ok("webapi"));
+        app.MapWebApi(serverOptions).MapGet("/ping", () => Results.Ok("webapi")).AllowAnonymous();
         app.MapBoxineApi(serverOptions).MapGet("/v1/ping", () => Results.Ok("boxine"));
 
         await app.StartAsync();

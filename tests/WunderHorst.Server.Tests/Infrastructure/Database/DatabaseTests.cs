@@ -113,6 +113,7 @@ public sealed class DatabaseTests : IDisposable
             ["Database:ConnectionString"] = $"Data Source={dbPath}"
         });
         builder.AddDatabase();
+        builder.Services.AddAuthorization();
         builder.Services.ConfigureHttpJsonOptions(options =>
         {
             options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
@@ -120,6 +121,7 @@ public sealed class DatabaseTests : IDisposable
 
         await using var app = builder.Build();
         await app.InitializeDatabaseAsync();
+        app.UseAuthorization();
         app.Use(async (context, next) =>
         {
             context.Connection.LocalPort = 18420;
