@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend:
+    name: Backend (.NET 10 Native AOT & Coverage)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install Native AOT prerequisites
+        run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
+
+      - name: Restore
+        run: dotnet restore WunderHorst.sln
+
+      - name: Build
+        run: dotnet build WunderHorst.sln --no-restore
+
+      - name: Test with Cobertura coverage
+        run: >
+          dotnet test WunderHorst.sln --no-build
+          --collect:"XPlat Code Coverage"
+          --results-directory ./TestResults
+
+      - name: Verify 100% branch coverage on Feature slices
+        shell: pwsh
+        run: |
+          $coverageFile = Get-ChildItem -Path ./TestResults -Filter coverage.cobertura.xml -Recurse | Select-Object -First 1
+          if (-not $coverageFile) { throw "No coverage.cobertura.xml found." }
+          [xml]$xml = Get-Content $coverageFile.FullName
+          $classes = $xml.coverage.packages.package.classes.class |
+            Where-Object {
+              $_.name -like "WunderHorst.Server.Features.*" -and
+              $_.name -notmatch "\+<" -and
+              $_.filename -match "(Endpoint|Handler|Validator|Mapper|Filter|Service)"
+            }
+          $failures = @()
+          foreach ($c in $classes) {
+            $rate = [double]$c.'branch-rate'
+            if ($rate -lt 1.0) {
+              $failures += "$($c.name): branch-rate=$rate"
+            }
+          }
+          if ($failures.Count -gt 0) {
+            Write-Error ("Branch coverage below 100%:`n" + ($failures -join "`n"))
+            exit 1
+          }
+          Write-Host "Verified 100% branch coverage across $($classes.Count) feature classes."
+
+      - name: Publish Native AOT
+        run: >
+          dotnet publish src/backend/WunderHorst.Server/WunderHorst.Server.csproj
+          -c Release
+          -o ./artifacts/backend-aot
+
+  frontend:
+    name: Frontend (Lint, Typecheck, Test & Build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: src/frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm --dir src/frontend install --frozen-lockfile
+
+      - name: Lint (ESLint + Stylelint)
+        run: pnpm --dir src/frontend run lint
+
+      - name: Typecheck
+        run: pnpm --dir src/frontend run typecheck
+
+      - name: Test (Vitest)
+        run: pnpm --dir src/frontend run test
+
+      - name: Build
+        run: pnpm --dir src/frontend run build
