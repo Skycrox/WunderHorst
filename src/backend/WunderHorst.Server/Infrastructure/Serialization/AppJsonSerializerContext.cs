@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using WunderHorst.Server.Features.System.GetHealth;
 
 namespace WunderHorst.Server.Infrastructure.Serialization;
 
@@ -10,4 +11,5 @@ namespace WunderHorst.Server.Infrastructure.Serialization;
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(ProblemDetails))]
+[JsonSerializable(typeof(GetHealthResponse))]
 public sealed partial class AppJsonSerializerContext : JsonSerializerContext;

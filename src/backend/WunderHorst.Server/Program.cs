@@ -1,5 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
+using WunderHorst.Server.Features.System.GetHealth;
+using WunderHorst.Server.Infrastructure.Errors;
 using WunderHorst.Server.Infrastructure.Hosting;
+using WunderHorst.Server.Infrastructure.Observability;
 using WunderHorst.Server.Infrastructure.Serialization;
 
 var builder = WebApplication.CreateSlimBuilder(args);
@@ -14,6 +17,12 @@ builder.WebHost.ConfigureKestrel(kestrel =>
     kestrel.ListenAnyIP(serverOptions.BoxineApiPort);
 });
 
+builder.AddObservability();
+
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddHealthChecks();
+
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
@@ -21,7 +30,11 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 var app = builder.Build();
 
-_ = app.MapWebApi(serverOptions);
+app.UseExceptionHandler();
+
+var webApi = app.MapWebApi(serverOptions);
+webApi.MapGetHealth();
+
 _ = app.MapBoxineApi(serverOptions);
 
 app.Run();
