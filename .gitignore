@@ -852,3 +852,6 @@ $RECYCLE.BIN/
 dist/
 .vite/
 *.tsbuildinfo
+
+# Local SQLite database directory
+src/backend/WunderHorst.Server/data/
