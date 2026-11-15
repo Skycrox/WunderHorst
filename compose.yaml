@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: src/backend/WunderHorst.Server/Dockerfile
+    ports:
+      - "18420:18420"
+      - "18443:18443"
+    environment:
+      Database__ConnectionString: "Data Source=/data/wunderhorst.db"
+      Auth__RequireSecureCookie: "false"
+    volumes:
+      - wunderhorst_data:/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: src/frontend/Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  wunderhorst_data: {}

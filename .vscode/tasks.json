@@ -1,0 +1,91 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Docker: Up (All)",
+      "type": "shell",
+      "command": "docker compose up -d --build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: Down (All)",
+      "type": "shell",
+      "command": "docker compose down",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: Up (Backend)",
+      "type": "shell",
+      "command": "docker compose up -d --build backend",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: Stop (Backend)",
+      "type": "shell",
+      "command": "docker compose stop backend",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: Up (Frontend)",
+      "type": "shell",
+      "command": "docker compose up -d --build frontend",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: Stop (Frontend)",
+      "type": "shell",
+      "command": "docker compose stop frontend",
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev: Backend (Watch)",
+      "type": "shell",
+      "command": "dotnet watch --project src/backend/WunderHorst.Server/WunderHorst.Server.csproj",
+      "isBackground": true,
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Dev: Frontend (Vite)",
+      "type": "shell",
+      "command": "pnpm --dir src/frontend run dev",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev: All (Backend + Frontend)",
+      "dependsOn": [
+        "Dev: Backend (Watch)",
+        "Dev: Frontend (Vite)"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build: Backend",
+      "type": "shell",
+      "command": "dotnet build src/backend/WunderHorst.Server/WunderHorst.Server.csproj",
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Build: Frontend",
+      "type": "shell",
+      "command": "pnpm --dir src/frontend run build",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build: All",
+      "dependsOn": [
+        "Build: Backend",
+        "Build: Frontend"
+      ],
+      "dependsOrder": "parallel",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

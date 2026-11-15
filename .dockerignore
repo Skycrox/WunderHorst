@@ -1,0 +1,9 @@
+**/.git
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/dist
+**/node_modules
+**/TestResults
+**/data/*.db*
