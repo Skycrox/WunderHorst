@@ -6,6 +6,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsNotAsErrors>$(WarningsNotAsErrors);NU1900;NU1903</WarningsNotAsErrors>
     <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);Dapper.AOT</InterceptorsNamespaces>
     <LangVersion>14</LangVersion>
   </PropertyGroup>
 </Project>

@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using WunderHorst.Server.Features.System.GetHealth;
+using WunderHorst.Server.Infrastructure.Database;
 using WunderHorst.Server.Infrastructure.Errors;
 using WunderHorst.Server.Infrastructure.Hosting;
 using WunderHorst.Server.Infrastructure.Observability;
@@ -18,10 +19,10 @@ builder.WebHost.ConfigureKestrel(kestrel =>
 });
 
 builder.AddObservability();
+builder.AddDatabase();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddHealthChecks();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -29,6 +30,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 var app = builder.Build();
+
+await app.InitializeDatabaseAsync();
 
 app.UseExceptionHandler();
 
