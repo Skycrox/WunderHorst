@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Microsoft.Extensions.Options;
 using WunderHorst.Server.Features.Auth.GetCurrentUser;
 using WunderHorst.Server.Features.Auth.Login;
@@ -30,6 +31,7 @@ builder.AddCookieAuth();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddOpenApi();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -38,16 +40,25 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 var app = builder.Build();
 
-await app.InitializeDatabaseAsync();
-await SetupAdminHandler.BootstrapFromOptionsAsync(
-    app.Services.GetRequiredService<ISqliteConnectionFactory>(),
-    app.Services.GetRequiredService<IOptions<AuthOptions>>(),
-    app.Logger);
+var isOpenApiExport = string.Equals(
+    Assembly.GetEntryAssembly()?.GetName().Name,
+    "GetDocument.Insider",
+    StringComparison.Ordinal);
+
+if (!isOpenApiExport)
+{
+    await app.InitializeDatabaseAsync();
+    await SetupAdminHandler.BootstrapFromOptionsAsync(
+        app.Services.GetRequiredService<ISqliteConnectionFactory>(),
+        app.Services.GetRequiredService<IOptions<AuthOptions>>(),
+        app.Logger);
+}
 
 app.UseExceptionHandler();
 app.UseCookieAuth();
 
 var webApi = app.MapWebApi(serverOptions);
+webApi.MapOpenApi("/openapi/{documentName}.json").AllowAnonymous();
 webApi.MapGetHealth();
 webApi.MapSetupAdmin();
 webApi.MapLogin();
