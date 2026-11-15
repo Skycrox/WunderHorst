@@ -123,3 +123,24 @@ Alle verbindlichen Architekturregeln **SOLLTEN** automatisiert im Build/CI gepr�
   * UI-Komponenten & Dateien: `PascalCase` (`Button.tsx`, `Button.module.css`).
   * Hooks: `use<Name>.ts` (`useTonieList.ts`).
   * CSS Design Tokens: `--<kategorie>-<semantik>-<variante>` (z. B. `--color-bg-surface`, `--space-md`, `--radius-sm`).
+
+---
+
+## 8. Design-Prinzipien, Dateistruktur & Dateigröße
+
+### 8.1 Design-Prinzipien (KISS, YAGNI, SOLID, DRY)
+* **KISS & YAGNI:** Code **SOLLTE** einfach und direkt lesbar bleiben und auf spekulative Vorab-Abstraktionen verzichten (z. B. keine generischen Repositories über `Dapper.AOT`, keine vorab eingebauten Erweiterungs-Hooks ohne konkreten Bedarf).
+* **SOLID (pragmatisch mit VSA & Native AOT):**
+  * **SRP & ISP:** Jede Klasse, jeder Handler und jede React-Komponente hat genau eine klar abgegrenzte Verantwortung und hängt nur von schmalen Schnittstellen ab.
+  * **OCP:** Neue Features werden über neue Vertical Slices bzw. Feature-Ordner ergänzt, ohne bestehende Slices umzubauen.
+  * **DIP:** Infrastruktur-Abhängigkeiten (`ISqliteConnectionFactory`, `ILoggerFactory`, `IOptions<T>`) werden injiziert; zustandslose Pure Functions (Validatoren, Mapper, Crypto-Helper) bleiben AOT-freundlich `static`.
+* **DRY mit Augenmaß:** Gemeinsame Infrastruktur, generierte API-Contracts und `src/ui/`-Komponenten **MÜSSEN** wiederverwendet werden. Zwischen unabhängigen Vertical Slices wird jedoch keine künstliche Vererbung oder gemeinsame Basisklasse erzwungen.
+
+### 8.2 Dateistruktur (1 Haupttyp pro Datei)
+* **Backend (C#):** Pro Datei **SOLLTE** genau **1 Haupttyp** (Klasse, Interface, Enum, Handler, Endpoint, Validator, Service) stehen (`Dateiname = Typname`).
+  * *VSA-Ausnahme:* Sehr kleine, eng zum selben Slice gehörende Hilfs-Records (z. B. ein slice-internes DB-Projection-`record` beim Handler oder ein kleines `Request`/`Response`-Paar) dürfen zusammen liegen. Geteilte Typen, Interfaces und Implementierungen stehen immer in eigenen Dateien.
+* **Frontend (TypeScript / React):** Pro Datei **SOLLTE** genau **1 Komponente** bzw. **1 Context/Hook-Modul** stehen (inkl. der direkt zugehörigen `Props`-/`Value`-Interfaces in derselben Datei).
+
+### 8.3 Maximale Dateigröße
+* Produktive Quelldateien **SOLLTEN** maximal **300 Zeilen** umfassen (Signal für einen SRP-Split) und **DÜRFEN** **500 Zeilen** nicht überschreiten.
+* **Ausnahmen:** Automatisch generierte Dateien (`src/frontend/src/api/schema.d.ts`, Source-Generator-Output, Lockfiles) sowie reine Token- und SQL-Migrationsdateien. Testdateien **SOLLTEN** ebenfalls unter 500 Zeilen bleiben (bei Bedarf nach Szenario aufteilen).
