@@ -1,0 +1,22 @@
+.heading {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.level1 {
+  font-size: var(--text-2xl);
+}
+
+.level2 {
+  font-size: var(--text-xl);
+}
+
+.level3 {
+  font-size: var(--text-lg);
+}
+
+.level4 {
+  font-size: var(--text-base);
+}
