@@ -42,6 +42,9 @@
       "type": "shell",
       "command": "dotnet watch --no-hot-reload --project src/backend/WunderHorst.Server/WunderHorst.Server.csproj",
       "isBackground": true,
+      "presentation": {
+        "group": "dev"
+      },
       "problemMatcher": "$msCompile"
     },
     {
@@ -49,6 +52,9 @@
       "type": "shell",
       "command": "pnpm --dir src/frontend run dev",
       "isBackground": true,
+      "presentation": {
+        "group": "dev"
+      },
       "problemMatcher": []
     },
     {
@@ -65,6 +71,9 @@
       "type": "shell",
       "command": "dotnet build src/backend/WunderHorst.Server/WunderHorst.Server.csproj",
       "group": "build",
+      "presentation": {
+        "group": "build"
+      },
       "problemMatcher": "$msCompile"
     },
     {
@@ -72,6 +81,9 @@
       "type": "shell",
       "command": "pnpm --dir src/frontend run build",
       "group": "build",
+      "presentation": {
+        "group": "build"
+      },
       "problemMatcher": []
     },
     {
