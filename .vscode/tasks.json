@@ -40,7 +40,7 @@
     {
       "label": "Dev: Backend (Watch)",
       "type": "shell",
-      "command": "dotnet watch --project src/backend/WunderHorst.Server/WunderHorst.Server.csproj",
+      "command": "dotnet watch --no-hot-reload --project src/backend/WunderHorst.Server/WunderHorst.Server.csproj",
       "isBackground": true,
       "problemMatcher": "$msCompile"
     },
