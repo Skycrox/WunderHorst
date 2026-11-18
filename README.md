@@ -43,7 +43,7 @@ Beim ersten Aufruf der Weboberfläche führt der Setup-Assistent durch das einma
 ### Voraussetzungen
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download) (für Native-AOT-Publish unter Linux zusätzlich `clang` und `zlib1g-dev`)
-- [Node.js 22+](https://nodejs.org/) und [pnpm](https://pnpm.io/)
+- [Node.js 24+](https://nodejs.org/) und [pnpm](https://pnpm.io/)
 
 ### Backend starten & testen
 

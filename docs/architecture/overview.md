@@ -68,7 +68,7 @@ Das Projekt kompiliert mit `<PublishAot>true</PublishAot>` ohne Reflection zur L
 
 - **Docker**:
   - `src/backend/WunderHorst.Server/Dockerfile`: Multi-Stage-Build mit `mcr.microsoft.com/dotnet/sdk:10.0-noble-aot` und minimalem `runtime-deps:10.0-noble-chiseled-extra` Runtime-Image.
-  - `src/frontend/Dockerfile`: Multi-Stage-Build mit `node:22-alpine` (`pnpm`) und `nginx:alpine` (SPA-Fallback + `/api/`-Proxy auf `backend:18420`).
+  - `src/frontend/Dockerfile`: Multi-Stage-Build mit `node:24-alpine` (`pnpm`) und `nginx:alpine` (SPA-Fallback + `/api/`-Proxy auf `backend:18420`).
   - `compose.yaml`: Orchestriert `backend` (`18420`, `18443`, Volume `wunderhorst_data:/data`) und `frontend` (`8080:80`).
 - **VS Code Tasks**: `.vscode/tasks.json` stellt Tasks für Docker Compose (`Up`/`Down`/`Stop` zusammen und getrennt), Dev-Server (`dotnet watch` + `pnpm dev`) sowie Builds bereit.
 - **CI**: `.github/workflows/ci.yml` prüft Backend-Tests inkl. 100 % Branch-Coverage-Gate auf Feature-Klassen, Native-AOT-Publish sowie Frontend Lint, Typecheck, Tests und Build.
